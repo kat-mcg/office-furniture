@@ -20,23 +20,26 @@ export async function PUT(
 ) {
   const { id } = await params;
   const body = await req.json();
+  // Only update fields that are explicitly provided in the request body
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: Record<string, any> = {};
+  if ("title" in body) data.title = body.title;
+  if ("url" in body) data.url = body.url || null;
+  if ("imageUrl" in body) data.imageUrl = body.imageUrl || null;
+  if ("price" in body) data.price = body.price ? parseFloat(body.price) : null;
+  if ("widthCm" in body) data.widthCm = body.widthCm ? parseFloat(body.widthCm) : null;
+  if ("depthCm" in body) data.depthCm = body.depthCm ? parseFloat(body.depthCm) : null;
+  if ("heightCm" in body) data.heightCm = body.heightCm ? parseFloat(body.heightCm) : null;
+  if ("material" in body) data.material = body.material || null;
+  if ("description" in body) data.description = body.description || null;
+  if ("leadTimeDays" in body) data.leadTimeDays = body.leadTimeDays ? parseInt(body.leadTimeDays) : null;
+  if ("quantity" in body) data.quantity = body.quantity ? parseInt(body.quantity) : 1;
+  if ("officeAreaId" in body) data.officeAreaId = body.officeAreaId || null;
+  if ("categoryId" in body) data.categoryId = body.categoryId || null;
+
   const item = await prisma.furnitureItem.update({
     where: { id },
-    data: {
-      title: body.title,
-      url: body.url || null,
-      imageUrl: body.imageUrl || null,
-      price: body.price !== undefined ? (body.price ? parseFloat(body.price) : null) : undefined,
-      widthCm: body.widthCm !== undefined ? (body.widthCm ? parseFloat(body.widthCm) : null) : undefined,
-      depthCm: body.depthCm !== undefined ? (body.depthCm ? parseFloat(body.depthCm) : null) : undefined,
-      heightCm: body.heightCm !== undefined ? (body.heightCm ? parseFloat(body.heightCm) : null) : undefined,
-      material: body.material || null,
-      description: body.description || null,
-      leadTimeDays: body.leadTimeDays !== undefined ? (body.leadTimeDays ? parseInt(body.leadTimeDays) : null) : undefined,
-      quantity: body.quantity ? parseInt(body.quantity) : 1,
-      officeAreaId: body.officeAreaId || null,
-      categoryId: body.categoryId || null,
-    },
+    data,
   });
   return NextResponse.json(item);
 }
