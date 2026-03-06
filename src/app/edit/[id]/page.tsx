@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { use } from "react";
 
 interface OfficeArea {
   id: string;
@@ -17,9 +18,9 @@ interface Category {
 export default function EditItemPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }> | { id: string };
 }) {
-  const { id } = use(params);
+  const { id } = params instanceof Promise ? use(params) : params;
   const router = useRouter();
   const [areas, setAreas] = useState<OfficeArea[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
