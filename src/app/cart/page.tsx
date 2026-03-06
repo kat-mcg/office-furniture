@@ -60,6 +60,18 @@ export default function CartPage() {
     setItems((prev) => prev.filter((item) => item.id !== id));
   }
 
+  async function updateQuantity(id: string, quantity: number) {
+    const q = Math.max(1, quantity);
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity: q } : item))
+    );
+    await fetch(`/api/cart/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ quantity: q }),
+    });
+  }
+
   function getOrderDeadline(leadTimeDays: number | null): Date | null {
     if (!moveInDate || !leadTimeDays) return null;
     const d = new Date(moveInDate + "T00:00:00");
@@ -213,13 +225,32 @@ export default function CartPage() {
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-sm text-gray-900">{item.title}</h3>
                     <div className="mt-1.5 space-y-1">
-                      <p className="text-sm text-gray-600">
-                        ${(item.price || 0).toFixed(2)}
-                        <span className="text-gray-400"> x {item.quantity} = </span>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="text-gray-600">${(item.price || 0).toFixed(2)}</span>
+                        <span className="text-gray-400">×</span>
+                        <div className="inline-flex items-center border border-gray-200 rounded-lg">
+                          <button
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            disabled={item.quantity <= 1}
+                            className="px-2 py-0.5 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-l-lg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                          >
+                            −
+                          </button>
+                          <span className="px-2 py-0.5 text-gray-900 font-medium min-w-[2rem] text-center border-x border-gray-200">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="px-2 py-0.5 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-r-lg transition-colors"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <span className="text-gray-400">=</span>
                         <span className="font-semibold text-gray-900">
                           ${subtotal.toFixed(2)}
                         </span>
-                      </p>
+                      </div>
 
                       {deadline && (
                         <div className={`flex items-center gap-1.5 text-sm font-medium ${
