@@ -70,7 +70,7 @@ function extractFromText(text: string, result: ScrapeResult): ScrapeResult {
 
   // Price from text
   if (!result.price) {
-    const priceMatch = text.match(/(?:US\s*)?\$\s*(\d+(?:[.,]\d{1,2})?)/);
+    const priceMatch = text.match(/(?:US\s*)?\$\s*(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)/);
     if (priceMatch) {
       result.price = priceMatch[1].replace(/,/g, "");
     }
