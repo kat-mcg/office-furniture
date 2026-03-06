@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface OfficeArea {
   id: string;
@@ -13,15 +14,21 @@ interface Category {
   name: string;
 }
 
-export default function AddItemPage() {
+export default function EditItemPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const router = useRouter();
-  const [url, setUrl] = useState("");
-  const [scraping, setScraping] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [areas, setAreas] = useState<OfficeArea[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     title: "",
+    url: "",
     imageUrl: "",
     price: "",
     widthCm: "",
@@ -34,55 +41,38 @@ export default function AddItemPage() {
     officeAreaId: "",
     categoryId: "",
   });
-  const [error, setError] = useState("");
-  const [scrapeMsg, setScrapeMsg] = useState("");
 
   useEffect(() => {
     Promise.all([
+      fetch(`/api/furniture/${id}`).then((r) => r.json()),
       fetch("/api/areas").then((r) => r.json()),
       fetch("/api/categories").then((r) => r.json()),
     ])
-      .then(([areasData, categoriesData]) => {
+      .then(([item, areasData, categoriesData]) => {
+        setForm({
+          title: item.title || "",
+          url: item.url || "",
+          imageUrl: item.imageUrl || "",
+          price: item.price?.toString() || "",
+          widthCm: item.widthCm?.toString() || "",
+          depthCm: item.depthCm?.toString() || "",
+          heightCm: item.heightCm?.toString() || "",
+          material: item.material || "",
+          description: item.description || "",
+          leadTimeDays: item.leadTimeDays?.toString() || "",
+          quantity: item.quantity?.toString() || "1",
+          officeAreaId: item.officeAreaId || "",
+          categoryId: item.categoryId || "",
+        });
         setAreas(areasData);
         setCategories(categoriesData);
+        setLoading(false);
       })
-      .catch(() => {});
-  }, []);
-
-  async function handleScrape() {
-    if (!url) return;
-    setScraping(true);
-    setError("");
-    setScrapeMsg("");
-    try {
-      const res = await fetch("/api/scrape", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+      .catch(() => {
+        setError("Failed to load item");
+        setLoading(false);
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Scraping failed");
-        return;
-      }
-      setForm((prev) => ({
-        ...prev,
-        title: data.title || prev.title,
-        imageUrl: data.imageUrl || prev.imageUrl,
-        price: data.price || prev.price,
-        widthCm: data.widthCm || prev.widthCm,
-        depthCm: data.depthCm || prev.depthCm,
-        heightCm: data.heightCm || prev.heightCm,
-        material: data.material || prev.material,
-        description: data.description || prev.description,
-      }));
-      setScrapeMsg("Details scraped successfully. Review and edit fields below.");
-    } catch {
-      setError("Failed to scrape URL");
-    } finally {
-      setScraping(false);
-    }
-  }
+  }, [id]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -93,74 +83,46 @@ export default function AddItemPage() {
     setSaving(true);
     setError("");
     try {
-      const res = await fetch("/api/furniture", {
-        method: "POST",
+      const res = await fetch(`/api/furniture/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, url }),
+        body: JSON.stringify(form),
       });
       if (!res.ok) {
-        setError("Failed to save item");
+        setError("Failed to save");
         return;
       }
       router.push("/gallery");
     } catch {
-      setError("Failed to save item");
+      setError("Failed to save");
     } finally {
       setSaving(false);
     }
   }
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <svg className="w-6 h-6 text-indigo-600 animate-spin" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl">
-      <div className="mb-8">
-        <h1 className="page-title">Add Furniture Item</h1>
-        <p className="page-subtitle">
-          Paste a product URL to auto-fill details, or enter them manually.
-        </p>
-      </div>
-
-      {/* Scrape Section */}
-      <div className="card p-5 mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.04a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364L4.34 8.342" />
+      <div className="flex items-center gap-3 mb-8">
+        <Link href="/gallery" className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-500">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>
-          <h2 className="font-semibold text-gray-900">Import from URL</h2>
+        </Link>
+        <div>
+          <h1 className="page-title">Edit Item</h1>
+          <p className="page-subtitle">Update the item details below.</p>
         </div>
-        <div className="flex gap-2">
-          <input
-            type="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://www.example.com/product..."
-            className="input"
-          />
-          <button
-            onClick={handleScrape}
-            disabled={scraping || !url}
-            className="btn-primary whitespace-nowrap"
-          >
-            {scraping ? (
-              <span className="flex items-center gap-2">
-                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Scraping...
-              </span>
-            ) : (
-              "Scrape Details"
-            )}
-          </button>
-        </div>
-        {scrapeMsg && (
-          <div className="flex items-center gap-2 mt-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {scrapeMsg}
-          </div>
-        )}
       </div>
 
       {error && (
@@ -172,7 +134,6 @@ export default function AddItemPage() {
         </div>
       )}
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="card p-5 space-y-5">
         <div>
           <label className="label">
@@ -182,8 +143,16 @@ export default function AddItemPage() {
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             className="input"
-            placeholder="e.g. Ergonomic Office Chair"
             required
+          />
+        </div>
+
+        <div>
+          <label className="label">Product URL</label>
+          <input
+            value={form.url}
+            onChange={(e) => setForm({ ...form, url: e.target.value })}
+            className="input"
           />
         </div>
 
@@ -193,7 +162,6 @@ export default function AddItemPage() {
             value={form.imageUrl}
             onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
             className="input"
-            placeholder="https://..."
           />
           {form.imageUrl && (
             <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
@@ -341,9 +309,18 @@ export default function AddItemPage() {
           </div>
         </div>
 
-        <button type="submit" disabled={saving} className="w-full btn-success py-3">
-          {saving ? "Saving..." : "Add Item"}
-        </button>
+        <div className="flex gap-3 pt-2">
+          <button type="submit" disabled={saving} className="flex-1 btn-primary py-3">
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/gallery")}
+            className="btn-secondary py-3 px-6"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Office Furniture Procurement
 
-## Getting Started
+Internal tool for managing office furniture procurement, selection, and order timeline tracking.
 
-First, run the development server:
+## Features
+
+- **Add Furniture** - Paste product URLs to auto-scrape details (title, price, image, dimensions), then manually edit all fields
+- **Browse & Select** - Gallery view of all items; add items to a shared order cart
+- **Order Cart & Timeline** - View selected items with auto-calculated order deadlines based on move-in date and lead times
+- **Floor Plans** - Upload floor plan images per office area; dimension-based fit checking for furniture items
+- **Settings** - Configure office areas with room dimensions, set move-in date
+
+## Tech Stack
+
+- Next.js 14 (App Router)
+- Prisma + SQLite
+- Cheerio (HTML scraping)
+- Tailwind CSS
+
+## Local Development
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### Setup
 
 ```bash
+# Install dependencies
+npm install
+
+# Generate Prisma client
+npx prisma generate
+
+# Create database and run migrations
+npx prisma migrate dev
+
+# Seed with sample data (3 furniture items + 6 office areas)
+npx tsx prisma/seed.ts
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy to Render
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Create a new Web Service on Render
 
-## Learn More
+- Connect your Git repository
+- **Build Command:** `npm install && npx prisma generate && npx prisma migrate deploy && npm run build`
+- **Start Command:** `npm start`
+- **Environment Variables:**
+  - `DATABASE_URL` = `file:./prisma/prod.db`
+  - `NODE_ENV` = `production`
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Persistent Disk (required for SQLite)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Add a **Persistent Disk** in Render settings
+- Mount path: `/opt/render/project/src/prisma`
+- This ensures the SQLite database persists across deploys
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Deploy
 
-## Deploy on Vercel
+Push to your connected branch. Render will build and deploy automatically.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Seed on first deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+After the first deploy, open the Render shell and run:
+
+```bash
+npx tsx prisma/seed.ts
+```
+
+## Deploy to Railway
+
+### 1. Create a new project
+
+- Connect your Git repository
+- Railway auto-detects Next.js
+
+### 2. Configure
+
+- **Build Command:** `npm install && npx prisma generate && npx prisma migrate deploy && npm run build`
+- **Start Command:** `npm start`
+- **Environment Variables:**
+  - `DATABASE_URL` = `file:./prisma/prod.db`
+- Add a **Volume** mounted at `/app/prisma` for SQLite persistence
+
+## Project Structure
+
+```
+src/
+  app/
+    page.tsx           # Add furniture item (with URL scraping)
+    gallery/page.tsx   # Browse & select items (CEO view)
+    cart/page.tsx       # Order cart with timeline
+    floorplans/page.tsx # View/upload floor plans
+    settings/page.tsx  # Office areas & move-in date
+    edit/[id]/page.tsx # Edit existing item
+    api/
+      furniture/       # CRUD for furniture items
+      scrape/          # URL scraping endpoint
+      cart/            # Cart toggle endpoint
+      settings/        # App settings (move-in date)
+      areas/           # Office areas CRUD + floor plan upload
+  lib/
+    prisma.ts          # Prisma client singleton
+    fit-check.ts       # Dimension fit-check logic
+prisma/
+  schema.prisma        # Database schema
+  seed.ts              # Seed script
+public/
+  uploads/             # Floor plan uploads
+```

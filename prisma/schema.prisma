@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model FurnitureItem {
+  id           String      @id @default(uuid())
+  title        String
+  url          String?
+  imageUrl     String?
+  price        Float?
+  widthCm      Float?
+  depthCm      Float?
+  heightCm     Float?
+  material     String?
+  description  String?
+  leadTimeDays Int?
+  quantity     Int         @default(1)
+  officeAreaId String?
+  officeArea   OfficeArea? @relation(fields: [officeAreaId], references: [id])
+  categoryId   String?
+  category     Category?   @relation(fields: [categoryId], references: [id])
+  inCart        Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model OfficeArea {
+  id             String          @id @default(uuid())
+  name           String          @unique
+  roomWidthCm    Float?
+  roomDepthCm    Float?
+  floorPlanPath  String?
+  furnitureItems FurnitureItem[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Category {
+  id             String          @id @default(uuid())
+  name           String          @unique
+  furnitureItems FurnitureItem[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model AppSettings {
+  id         String   @id @default("singleton")
+  moveInDate String?
+  updatedAt  DateTime @updatedAt
+}
