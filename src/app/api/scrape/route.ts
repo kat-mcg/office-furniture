@@ -55,9 +55,25 @@ function extractFromText(text: string, result: ScrapeResult): ScrapeResult {
   // Material
   if (!result.material) {
     const materialKeywords = [
-      "wood", "metal", "steel", "fabric", "leather", "plastic",
-      "glass", "marble", "oak", "walnut", "pine", "bamboo", "mesh",
-      "aluminum", "aluminium", "chrome", "velvet", "linen", "polyester",
+      "wood",
+      "metal",
+      "steel",
+      "fabric",
+      "leather",
+      "plastic",
+      "glass",
+      "marble",
+      "oak",
+      "walnut",
+      "pine",
+      "bamboo",
+      "mesh",
+      "aluminum",
+      "aluminium",
+      "chrome",
+      "velvet",
+      "linen",
+      "polyester",
     ];
     const lower = text.toLowerCase();
     for (const kw of materialKeywords) {
@@ -70,7 +86,9 @@ function extractFromText(text: string, result: ScrapeResult): ScrapeResult {
 
   // Price from text
   if (!result.price) {
-    const priceMatch = text.match(/(?:US\s*)?\$\s*(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)/);
+    const priceMatch = text.match(
+      /(?:US\s*)?\$\s*(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)/
+    );
     if (priceMatch) {
       result.price = priceMatch[1].replace(/,/g, "");
     }
@@ -108,7 +126,9 @@ async function scrapeWithFirecrawl(url: string): Promise<ScrapeResult | null> {
       title: str(metadata?.["og:title"] || metadata?.ogTitle || metadata?.title).slice(0, 200),
       imageUrl: str(metadata?.["og:image"] || metadata?.ogImage || metadata?.image),
       price: "",
-      description: str(metadata?.["og:description"] || metadata?.ogDescription || metadata?.description).slice(0, 500),
+      description: str(
+        metadata?.["og:description"] || metadata?.ogDescription || metadata?.description
+      ).slice(0, 500),
       widthCm: "",
       depthCm: "",
       heightCm: "",
@@ -125,7 +145,9 @@ async function scrapeWithFirecrawl(url: string): Promise<ScrapeResult | null> {
 
     // Try to extract first product image from markdown
     if (!result.imageUrl && markdown) {
-      const imgMatch = markdown.match(/!\[.*?\]\((https?:\/\/[^\s)]+(?:\.jpg|\.jpeg|\.png|\.webp|\.avif)[^\s)]*)\)/i);
+      const imgMatch = markdown.match(
+        /!\[.*?\]\((https?:\/\/[^\s)]+(?:\.jpg|\.jpeg|\.png|\.webp|\.avif)[^\s)]*)\)/i
+      );
       if (imgMatch) {
         result.imageUrl = imgMatch[1];
       }
@@ -144,13 +166,13 @@ async function scrapeWithFirecrawl(url: string): Promise<ScrapeResult | null> {
 
       // Price from HTML
       const priceSelectors = [
-        '.a-price .a-offscreen',
+        ".a-price .a-offscreen",
         '[data-testid="price"]',
-        '.price-current',
-        '.product-price',
+        ".price-current",
+        ".product-price",
         '[itemprop="price"]',
         'meta[property="product:price:amount"]',
-        '.a-price-whole',
+        ".a-price-whole",
       ];
       for (const sel of priceSelectors) {
         const el = $(sel).first();
@@ -201,20 +223,20 @@ async function scrapeWithCheerio(url: string): Promise<ScrapeResult> {
     $('meta[property="og:image"]').attr("content") ||
     $("#landingImage").attr("src") ||
     $("#imgBlkFront").attr("src") ||
-    $('img[data-a-dynamic-image]').attr("src") ||
+    $("img[data-a-dynamic-image]").attr("src") ||
     $("img.product-image").attr("src") ||
     $('img[itemprop="image"]').attr("src") ||
     "";
 
   let price = "";
   const priceSelectors = [
-    '.a-price .a-offscreen',
+    ".a-price .a-offscreen",
     '[data-testid="price"]',
-    '.price-current',
-    '.product-price',
+    ".price-current",
+    ".product-price",
     '[itemprop="price"]',
     'meta[property="product:price:amount"]',
-    '.a-price-whole',
+    ".a-price-whole",
   ];
   for (const sel of priceSelectors) {
     const el = $(sel).first();
@@ -291,11 +313,12 @@ export async function POST(req: NextRequest) {
     if (ch) return NextResponse.json(ch);
 
     // Both empty or not useful — return whichever has anything
-    const fallback = firecrawlResult && !isEmpty(firecrawlResult)
-      ? firecrawlResult
-      : cheerioResult && !isEmpty(cheerioResult)
-        ? cheerioResult
-        : null;
+    const fallback =
+      firecrawlResult && !isEmpty(firecrawlResult)
+        ? firecrawlResult
+        : cheerioResult && !isEmpty(cheerioResult)
+          ? cheerioResult
+          : null;
 
     if (fallback) return NextResponse.json(fallback);
 

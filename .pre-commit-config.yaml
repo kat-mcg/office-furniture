@@ -1,0 +1,15 @@
+repos:
+  - repo: local
+    hooks:
+      - id: prettier
+        name: Prettier format check
+        entry: npx prettier --check
+        language: node
+        types_or: [ts, tsx, javascript, jsx, json, css, markdown]
+        pass_filenames: true
+      - id: eslint
+        name: ESLint
+        entry: npx eslint --max-warnings=0
+        language: node
+        types_or: [ts, tsx, javascript, jsx]
+        pass_filenames: true
