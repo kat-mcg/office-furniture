@@ -82,8 +82,7 @@ async function main() {
     data: {
       title: "Ergonomic Mesh Office Chair - Adjustable Lumbar Support",
       url: "https://example.com/office-chair",
-      imageUrl:
-        "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&h=400&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&h=400&fit=crop",
       price: 349.99,
       widthCm: 65,
       depthCm: 65,
@@ -102,8 +101,7 @@ async function main() {
     data: {
       title: "Standing Desk - Electric Height Adjustable 160x80cm",
       url: "https://example.com/standing-desk",
-      imageUrl:
-        "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400&h=400&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400&h=400&fit=crop",
       price: 599.0,
       widthCm: 160,
       depthCm: 80,
@@ -122,8 +120,7 @@ async function main() {
     data: {
       title: "Conference Table - Oval 240x120cm",
       url: "https://example.com/conference-table",
-      imageUrl:
-        "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=400&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=400&fit=crop",
       price: 1299.0,
       widthCm: 240,
       depthCm: 120,
