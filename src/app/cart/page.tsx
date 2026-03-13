@@ -14,6 +14,7 @@ interface OfficeArea {
 interface FurnitureItem {
   id: string;
   title: string;
+  url: string | null;
   imageUrl: string | null;
   price: number | null;
   widthCm: number | null;
@@ -209,7 +210,23 @@ export default function CartPage() {
                     overdue ? "!border-red-300 !bg-red-50/50 ring-1 ring-red-200" : ""
                   }`}
                 >
-                  {item.imageUrl ? (
+                  {item.url ? (
+                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="flex-shrink-0">
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.title}
+                          className="w-20 h-20 object-contain rounded-lg border border-gray-200 bg-white p-1 hover:border-indigo-300 transition-colors"
+                        />
+                      ) : (
+                        <div className="w-20 h-20 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center hover:border-indigo-300 transition-colors">
+                          <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 002.25-2.25V5.25a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+                          </svg>
+                        </div>
+                      )}
+                    </a>
+                  ) : item.imageUrl ? (
                     <img
                       src={item.imageUrl}
                       alt={item.title}
@@ -223,7 +240,13 @@ export default function CartPage() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-sm text-gray-900">{item.title}</h3>
+                    {item.url ? (
+                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-sm text-gray-900 hover:text-indigo-600 transition-colors">
+                        {item.title}
+                      </a>
+                    ) : (
+                      <h3 className="font-semibold text-sm text-gray-900">{item.title}</h3>
+                    )}
                     <div className="mt-1.5 space-y-1">
                       <div className="flex items-center gap-2 text-sm">
                         <span className="text-gray-600">${(item.price || 0).toFixed(2)}</span>
