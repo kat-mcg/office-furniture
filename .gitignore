@@ -32,8 +32,9 @@ yarn-error.log*
 # vercel
 .vercel
 
-# claude
-.claude/
+# claude (allow commands to be tracked)
+.claude/settings*
+.claude/todos*
 
 # typescript
 *.tsbuildinfo

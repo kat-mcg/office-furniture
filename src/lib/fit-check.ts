@@ -15,10 +15,8 @@ export function checkFit(
   const maxItemDepth = roomDepthCm * 0.8;
 
   // Try both orientations
-  const fitsNormal =
-    itemWidthCm <= maxItemWidth && itemDepthCm <= maxItemDepth;
-  const fitsRotated =
-    itemDepthCm <= maxItemWidth && itemWidthCm <= maxItemDepth;
+  const fitsNormal = itemWidthCm <= maxItemWidth && itemDepthCm <= maxItemDepth;
+  const fitsRotated = itemDepthCm <= maxItemWidth && itemWidthCm <= maxItemDepth;
 
   if (fitsNormal || fitsRotated) {
     return "fits";

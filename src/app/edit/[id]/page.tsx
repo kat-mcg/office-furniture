@@ -105,8 +105,19 @@ export default function EditItemPage({
     return (
       <div className="flex items-center justify-center py-20">
         <svg className="w-6 h-6 text-indigo-600 animate-spin" viewBox="0 0 24 24" fill="none">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          />
         </svg>
       </div>
     );
@@ -115,9 +126,22 @@ export default function EditItemPage({
   return (
     <div className="max-w-2xl">
       <div className="flex items-center gap-3 mb-8">
-        <Link href="/gallery" className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-500">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+        <Link
+          href="/gallery"
+          className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-500"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+            />
           </svg>
         </Link>
         <div>
@@ -128,8 +152,18 @@ export default function EditItemPage({
 
       {error && (
         <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
-          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          <svg
+            className="w-4 h-4 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+            />
           </svg>
           {error}
         </div>
@@ -166,11 +200,7 @@ export default function EditItemPage({
           />
           {form.imageUrl && (
             <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <img
-                src={form.imageUrl}
-                alt="Preview"
-                className="h-36 object-contain rounded"
-              />
+              <img src={form.imageUrl} alt="Preview" className="h-36 object-contain rounded" />
             </div>
           )}
         </div>
@@ -192,9 +222,7 @@ export default function EditItemPage({
             <input
               type="number"
               value={form.leadTimeDays}
-              onChange={(e) =>
-                setForm({ ...form, leadTimeDays: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, leadTimeDays: e.target.value })}
               className="input"
               placeholder="e.g. 14"
             />
@@ -254,9 +282,7 @@ export default function EditItemPage({
           <label className="label">Description</label>
           <textarea
             value={form.description}
-            onChange={(e) =>
-              setForm({ ...form, description: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
             rows={3}
             className="input"
             placeholder="Brief product description..."
@@ -278,9 +304,7 @@ export default function EditItemPage({
             <label className="label">Category</label>
             <select
               value={form.categoryId}
-              onChange={(e) =>
-                setForm({ ...form, categoryId: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
               className="input"
             >
               <option value="">-- Select category --</option>
@@ -295,9 +319,7 @@ export default function EditItemPage({
             <label className="label">Office Area</label>
             <select
               value={form.officeAreaId}
-              onChange={(e) =>
-                setForm({ ...form, officeAreaId: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, officeAreaId: e.target.value })}
               className="input"
             >
               <option value="">-- Select area --</option>

@@ -122,8 +122,18 @@ export default function AddItemPage() {
       {/* Scrape Section */}
       <div className="card p-5 mb-6">
         <div className="flex items-center gap-2 mb-3">
-          <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.04a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364L4.34 8.342" />
+          <svg
+            className="w-5 h-5 text-indigo-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.04a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364L4.34 8.342"
+            />
           </svg>
           <h2 className="font-semibold text-gray-900">Import from URL</h2>
         </div>
@@ -143,8 +153,19 @@ export default function AddItemPage() {
             {scraping ? (
               <span className="flex items-center gap-2">
                 <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
                 </svg>
                 Scraping...
               </span>
@@ -155,8 +176,18 @@ export default function AddItemPage() {
         </div>
         {scrapeMsg && (
           <div className="flex items-center gap-2 mt-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-4 h-4 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             {scrapeMsg}
           </div>
@@ -165,8 +196,18 @@ export default function AddItemPage() {
 
       {error && (
         <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
-          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          <svg
+            className="w-4 h-4 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+            />
           </svg>
           {error}
         </div>
@@ -197,11 +238,7 @@ export default function AddItemPage() {
           />
           {form.imageUrl && (
             <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <img
-                src={form.imageUrl}
-                alt="Preview"
-                className="h-36 object-contain rounded"
-              />
+              <img src={form.imageUrl} alt="Preview" className="h-36 object-contain rounded" />
             </div>
           )}
         </div>
@@ -223,9 +260,7 @@ export default function AddItemPage() {
             <input
               type="number"
               value={form.leadTimeDays}
-              onChange={(e) =>
-                setForm({ ...form, leadTimeDays: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, leadTimeDays: e.target.value })}
               className="input"
               placeholder="e.g. 14"
             />
@@ -285,9 +320,7 @@ export default function AddItemPage() {
           <label className="label">Description</label>
           <textarea
             value={form.description}
-            onChange={(e) =>
-              setForm({ ...form, description: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
             rows={3}
             className="input"
             placeholder="Brief product description..."
@@ -309,9 +342,7 @@ export default function AddItemPage() {
             <label className="label">Category</label>
             <select
               value={form.categoryId}
-              onChange={(e) =>
-                setForm({ ...form, categoryId: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
               className="input"
             >
               <option value="">-- Select category --</option>
@@ -326,9 +357,7 @@ export default function AddItemPage() {
             <label className="label">Office Area</label>
             <select
               value={form.officeAreaId}
-              onChange={(e) =>
-                setForm({ ...form, officeAreaId: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, officeAreaId: e.target.value })}
               className="input"
             >
               <option value="">-- Select area --</option>
