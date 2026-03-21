@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 import Nav from "./nav";
 
@@ -31,6 +32,10 @@ export default function RootLayout({
       >
         <Nav />
         <main className="max-w-7xl mx-auto px-6 py-8">{children}</main>
+        <Script
+          src="https://superoptimizers.cofounder.co/agentation/widget.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
